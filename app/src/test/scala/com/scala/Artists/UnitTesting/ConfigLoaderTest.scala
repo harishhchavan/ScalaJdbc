@@ -13,7 +13,7 @@ class ConfigLoaderTest extends AnyFlatSpec with Matchers {
 
   it should "load app config correctly" in {
     val loader = new TypeSafeConfigLoader(config.getConfig("app"))
-    loader.csvPath shouldBe "artist.csv"
+    loader.csvPath shouldBe "C:/SQLAssignment/user_top_artists.csv"
   }
 
   it should "load db config correctly" in {

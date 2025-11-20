@@ -36,6 +36,7 @@ object CSVLoaderApp extends App with Logging {
     logger.info("=== All Manual Tests Completed ===")
 
   } finally {
+
     try connection.close()
     catch {
       case ex: Throwable => logger.warn("Error closing DB connection", ex)

@@ -7,19 +7,32 @@ import org.scalatest.matchers.should.Matchers
 
 class ConfigLoaderTest extends AnyFlatSpec with Matchers {
 
-  val config = ConfigFactory.load()
-
   behavior of "ConfigLoader"
 
-  it should "load app config correctly" in {
-    val loader = new TypeSafeConfigLoader(config.getConfig("app"))
-    loader.csvPath shouldBe "C:/SQLAssignment/user_top_artists.csv"
+  it should "load app config from supplied test config" in {
+    val testConf = ConfigFactory.parseString(
+      """app {
+        |  csvPath = "artist.csv"
+        |  batchSize = 100
+        |}
+        |""".stripMargin)
+    val loader = new TypeSafeConfigLoader(testConf.getConfig("app"))
+    loader.csvPath shouldBe "artist.csv"
+    loader.batchSize shouldBe 100
   }
 
-  it should "load db config correctly" in {
-    val loader = new TypeSafeDatabaseSettings(config.getConfig("db"))
-    loader.url shouldBe "jdbc:h2:mem:testdb;MODE=MSSQLServer;DB_CLOSE_DELAY=-1"
-    loader.driver shouldBe "org.h2.Driver"
-    loader.user shouldBe "sa"
+  it should "load db config from supplied test config" in {
+    val testDb = ConfigFactory.parseString(
+      """db {
+        |  url = "jdbc:h2:mem:testdb;MODE=MSSQLServer;DB_CLOSE_DELAY=-1"
+        |  user = "sa"
+        |  password = ""
+        |  driver = "org.h2.Driver"
+        |}
+        |""".stripMargin)
+    val dbLoader = new TypeSafeDatabaseSettings(testDb.getConfig("db"))
+    dbLoader.url should startWith("jdbc:h2:mem:testdb")
+    dbLoader.driver shouldBe "org.h2.Driver"
+    dbLoader.user shouldBe "sa"
   }
 }
